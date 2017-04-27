@@ -52,5 +52,7 @@ Mapping ISO 639-3 codes to Glottocodes
 ...
 
 
+## Using the API as stable interface when moving the backend
 
-
+Caveat: While the API is certainly the right thing to keep stable, losing direct access to the data files
+may be a problem.
