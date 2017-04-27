@@ -28,8 +28,20 @@ See also https://github.com/clld/lanclid2/blob/master/presentations/forkel.pdf
 
 ## Example: D-PLACE
 
-- clone the repository
+- fork the repository
+- clone your fork on your machine
 - navigate the data in your file-system
+
+
+## Collaboration
+
+- edit data in fork
+- commit and push
+- create pull request
+
+## Example: Glottolog
+
+- changing a language name
 
 
 ## Adding an API to the data
