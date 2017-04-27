@@ -21,7 +21,7 @@ favorite format for tabular data - is gaining popularity every day:
 - Gelato
 
 For relational data, though, this approach sacrifices a built-in mechanism to enforce referential integrity
-(which relational databases provide). But this can be alleviated using scripts to check data consistency
+(which relational databases provide - see https://github.com/shh-dlce/qmss-2016/blob/master/masterclass/data-curation-sql.pdf). But this can be alleviated using scripts to check data consistency
 (and using the GitHub platform these checks could be run automatically).
 
 See also https://github.com/clld/lanclid2/blob/master/presentations/forkel.pdf
