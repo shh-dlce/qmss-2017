@@ -68,3 +68,11 @@ Mapping ISO 639-3 codes to Glottocodes
 
 Caveat: While the API is certainly the right thing to keep stable, losing direct access to the data files
 may be a problem.
+
+
+
+## Summary
+
+It's still early days for this model of data curation, but given its potential for collaborative enhancement
+of both data and API, we want to make it known to the people who could make use of the data as well as contribute
+to the curation.
