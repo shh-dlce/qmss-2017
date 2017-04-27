@@ -25,3 +25,32 @@ For relational data, though, this approach sacrifices a built-in mechanism to en
 (and using the GitHub platform these checks could be run automatically).
 
 See also https://github.com/clld/lanclid2/blob/master/presentations/forkel.pdf
+
+## Example: D-PLACE
+
+- clone the repository
+- navigate the data in your file-system
+
+
+## Adding an API to the data
+
+If we already have scripts to check consistency of the data, it is only one more step to turn these
+scripts into a full-fledged API to the data, i.e. provide programmatic access to the data.
+
+### Example: Glottolog
+
+Mapping ISO 639-3 codes to Glottocodes
+
+
+## Using the API to build a CLI
+
+...
+
+
+## Using the API to feed a web application
+
+...
+
+
+
+
