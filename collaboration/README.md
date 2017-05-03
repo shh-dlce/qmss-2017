@@ -11,14 +11,16 @@ curation via git means:
 It turns out that quite a few datasets important to us can be modelled in this way, and CSV - everyone's 
 favorite format for tabular data - is gaining popularity every day:
 
-- Glottolog:
+- [Glottolog](https://github.com/):
   - Bibliographic information is stored as set of BibTeX files
   - Language information is stored as one INI file per language
   - directory tree models the language classification
 
-- D-PLACE
-- Concepticon
-- Gelato
+- [D-PLACE](https://github.com/D-PLACE/dplace-data):
+  - Trees are stored as NEXUS files
+
+- [Concepticon](https://github.com/clld/concepticon-data)
+- [Gelato](https://github.com/gelato-org/gelato-data)
 
 For relational data, though, this approach sacrifices a built-in mechanism to enforce referential integrity
 (which relational databases provide - see https://github.com/shh-dlce/qmss-2016/blob/master/masterclass/data-curation-sql.pdf). But this can be alleviated using scripts to check data consistency
@@ -87,6 +89,15 @@ less
 
 If we already have scripts to check consistency of the data, it is only one more step to turn these
 scripts into a full-fledged API to the data, i.e. provide programmatic access to the data.
+
+
+### Example: Concepticon
+
+With the data being accessible programmatically, it is easy to write 
+[short scripts](https://github.com/clld/concepticon-data/blob/master/pyconcepticon/commands.py#L290-L305) to
+summarize information, e.g. to create tables of contents like
+https://github.com/clld/concepticon-data/blob/master/concepticondata/conceptlists/README.md
+
 
 ### Example: Glottolog
 
