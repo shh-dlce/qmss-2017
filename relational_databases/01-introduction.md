@@ -56,6 +56,8 @@ SQL is a large standard, and like most large standards, no implementation adhere
 Still, when sticking to basic constructs, a good level of interoperability between database
 platforms can be reached.
 
+And SQL is 43 years old.
+
 
 ## SQLite
 

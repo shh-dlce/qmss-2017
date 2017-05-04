@@ -19,8 +19,11 @@ favorite format for tabular data - is gaining popularity every day:
 - [D-PLACE](https://github.com/D-PLACE/dplace-data):
   - Trees are stored as NEXUS files
 
-- [Concepticon](https://github.com/clld/concepticon-data)
-- [Gelato](https://github.com/gelato-org/gelato-data)
+- [Concepticon](https://github.com/clld/concepticon-data):
+  - Each concept list is just a CSV file
+
+- [Gelato](https://github.com/gelato-org/gelato-data):
+  - modelled following the D-PLACE repository
 
 For relational data, though, this approach sacrifices a built-in mechanism to enforce referential integrity
 (which relational databases provide - see https://github.com/shh-dlce/qmss-2016/blob/master/masterclass/data-curation-sql.pdf). But this can be alleviated using scripts to check data consistency
@@ -30,7 +33,7 @@ See also https://github.com/clld/lanclid2/blob/master/presentations/forkel.pdf
 
 ## Example: D-PLACE
 
-- forking the repository
+- fork the repository
   ![fork D-PLACE/dplace-data](dplace-data.png)
   will create your personal copy of the repository
   ![your fork](dplace-data-fork.png)
@@ -40,49 +43,65 @@ See also https://github.com/clld/lanclid2/blob/master/presentations/forkel.pdf
   git clone git@github.com:xrotwang/dplace-data.git
   ```
 - navigate the data in your file-system
-du
-ls -al
-tree (not in git bash for windows)
-wc
-- `head`: Inspect the first couple of lines in a file
-  ```bash
-  $ head datasets/sources.bib 
-  # -*- coding: utf-8 -*-
-  @book{abadie1924,
+  - `du`: Investigate disk usage
+    ```bash
+    $ du -sh .
+    144M
+    ```
+  - `ls`: List directory contents
+    ```bash
+    $ ls -1
+    csv
+    datasets
+    geo
+    legacy
+    LICENSE.txt
+    phylogenies
+    pydplace
+    README.md
+    RELEASING.md
+    scripts
+    setup.cfg
+    setup.py
+    SOURCES.md
+    tox.ini
+    ```
+  - `tree`: Look at directory trees (not in git bash for windows)
+  - `head`: Inspect the first couple of lines in a file
+    ```bash
+    $ head datasets/sources.bib 
+    # -*- coding: utf-8 -*-
+    @book{abadie1924,
       author = {Abadie, Maurice},
       title = {Les races du Haut-Tonkin},
       address = {Paris},
       year = {1924},
       url = {https://archive.org/details/McGillLibrary-103431-303},
       key = {Abadie (1924)}
-  }
-  @article{abasadse1894,
-  ```
-- `grep`:
-  ```bash
-  $ grep "@" datasets/sources.bib
-  ```
-- Pipes:$ grep "@" datasets/sources.bib | wc -l
-3980
-
-  ```bash
-  $ grep "@" datasets/sources.bib | wc -l
-  3980
-  ```
-
-tail
-less
+    }
+    @article{abasadse1894,
+    ```
+  - `grep`:
+    ```bash
+    $ grep "@" datasets/sources.bib
+    ```
+  - Pipes:
+    ```bash
+    $ grep "@" datasets/sources.bib | wc -l
+    3980
+    ```
 
 
 ## Collaboration
 
-- edit data in fork
-- commit and push
-- create pull request
+Curating data using git and GitHub means you can also use the well-established
+[fork & pull request workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
+to work on the data collaboratively.
+
 
 ## Example: Glottolog
 
-- changing a language name
+https://github.com/clld/glottolog/pull/84
 
 
 ## Adding an API to the data
@@ -183,10 +202,21 @@ Indo-European [indo1319]
 
 ## Using the API to feed a web application
 
-...
+Having an API to access the data also makes it simple to repurpose the data, e.g.
+load it into a database which powers a web application. This is how we operate
+
+- https://d-place.org
+- http://glottolog.org
+
+and a couple other websites.
 
 
 ## Using the API as stable interface when moving the backend
+
+Using the API as the (only) way to access the data also offers some flexibility.
+Should flat file storage become a problem (maybe because of bad performance),
+switching to a relational database like SQLite for storage could be done without
+breaking client code accessing the data.
 
 Caveat: While the API is certainly the right thing to keep stable, losing direct access to the data files
 may be a problem.
