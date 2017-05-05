@@ -1,0 +1,147 @@
+---
+title: "QMSS R Tutorial Part 6: if, for and lists"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+R includes some basic programming tools like `if` and `for` statements, and another data structure called a "list".  These aren't always necessary, but sometimes come in helpful.
+
+# If
+
+If statements run a piece of code only if a statement evaluates to `TRUE`.
+
+In the code below, we pick 5 random numbers (from the normal distribution, mean of 0 and standard deviation of 1), then "print" something to the console if the first number is bigger than zero.
+
+
+```{r}
+# First, we set a random seed, so that my results are the same as yours.
+set.seed(992)
+# choose 5 random numbers
+x <- rnorm(5)
+# take a look
+x
+# is the first bigger than 0?
+x[1] > 0
+
+if(x[1] > 0){
+  x[1] <- x * 1000
+}
+
+# take a look at x again
+x
+
+```
+
+We can also optionally include a bit of code to run if the statement is `FALSE`.  Here we test the 5th number:
+
+```{r}
+if(x[5] > 0){
+  print("First number is bigger than 0")
+} else{
+  print("First number is not bigger than 0")
+}
+```
+
+# For
+
+A `for` loop is a statement which creates a vector of variables, then runs a bit of code .
+
+```{r}
+# Make a list of numbers from 1 to 10
+myVector <- 1:10
+for(i in myVector){
+  # double the number
+  doublei <- i * 2
+  # print the number
+  print(doublei)
+}
+```
+
+We read this as "for each i in myVector, do the following: double i , then print that value."
+
+The variable `i` is not defined before the for loop. Instead, `i` is set to the first item in the vector, then the code within the for loop is run with `i` having that value.  Then `i` is given the next value in the vector, and the code is run again.
+
+While `i` is still accessible outside the for loop, it is best practice to pretend that `i` only exists inside the loop.
+
+Note that you can name the variable anything, not just `i`.
+
+This is sometimes useful when we want to make a new list.  For example, if we want to add numbers to a vector from another vector, but only if they are greater than zero.
+
+```{r}
+
+set.seed(992)
+# choose 5 random numbers
+x <- rnorm(5)
+
+# create empty vector for positive numbers
+posNums <- c()
+
+# for each item in x
+for(i in x){
+  # if the item is more than zero,
+  if(i > 0){
+    # add the item to the list posNums
+    # (add a number to the list by using 'c')
+    posNums <- c(posNums,i)
+  }
+}
+
+# Look at x
+x
+
+# Look at posNums
+posNums
+
+```
+
+However, in R there is almost always an easier and faster way to do things than using a for loop.  For example, the code below does the same thing:
+
+```{r}
+set.seed(992)
+# choose 5 random numbers
+x <- rnorm(5)
+# use indexing to get positive numbers
+posNums = x[x>0]
+
+x
+posNums
+```
+
+# Lists
+
+Previously, we've been using vectors of numbers (1 dimensional) and data frames (2 dimensional).  This is usually enough for most needs, but R also has a data structure called a `list`.  Lists work in a similar way to vectors, but the items inside them can be vectors themselves, and of varying lengths.
+
+Imagine we have 3 students who have sat various exams.  In the code below, we define an empty list, then add three vectors of scores to it (one for each student):
+
+```{r}
+scores = list()
+scores[[1]] <- c(76, 86, 90)
+scores[[2]] <- c(70, 88)
+scores[[3]] <- c(50, 59, 72, 66)
+```
+
+We can now access members of the list with double square bracksts:
+
+```{r}
+scores[[2]]
+```
+
+Or use them in a function like `lapply`, which applies a function to each member of the list, then returns the result.
+
+```{r}
+lapply(scores, mean)
+```
+
+This returns a list where each member of the list contains the mean score for the student.
+
+
+
+
+---
+
+Go to the [next tutorial](IntroToR_7.html)
+
+Back to the [index](../IntroToR.html)

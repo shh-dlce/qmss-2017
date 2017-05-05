@@ -1,0 +1,232 @@
+#NEXUS
+  
+  BEGIN TAXA;
+  TITLE Taxa;
+  DIMENSIONS NTAX=106;
+  TAXLABELS
+  fub
+adj
+asa
+bfd
+bsp
+bkc
+liy
+bni
+abb
+bci
+grj
+bas
+bip
+bom
+bin
+bli
+buu
+buf
+cme
+cgg
+dag
+bvx
+ema
+enn
+ewe
+ewo
+pym
+gmm
+gbp
+gkn
+hay
+heh
+hem
+dud
+ilb
+izi
+jar
+dyo
+jbu
+kbp
+kcv
+ogo
+kik
+kin
+kng
+kwn
+lag
+lef
+lub
+lun
+lue
+mgh
+mdm
+mdt
+mdd
+lol
+mua
+ndo
+nmd
+ndt
+ndv
+nga
+agh
+ngc
+ngo
+nko
+snf
+nbw
+nse
+mzm
+wol
+zga
+ibo
+nup
+nyn
+nya
+nzk
+ann
+ogu
+bdu
+pbr
+poy
+rng
+ndi
+sag
+kwy
+szg
+sna
+sif
+dga
+sot
+spp
+swh
+tap
+tlj
+ifm
+tll
+tem
+tiv
+tui
+kcg
+bav
+xho
+yor
+zne
+zul
+  ;
+  END;
+  
+  
+  
+  BEGIN CHARACTERS;
+  TITLE  Character_Matrix;
+  LINK TAXA = Taxa;
+  DIMENSIONS  NCHAR=2;
+  FORMAT DATATYPE = STANDARD GAP = - MISSING = ? SYMBOLS = "  0 1";
+  MATRIX
+  fub 1 1
+adj 1 0
+asa 1 1
+bfd 1 1
+bsp 1 0
+bkc 1 1
+liy 1 1
+bni 1 1
+abb 1 1
+bci 1 0
+grj 1 0
+bas 1 1
+bip 1 1
+bom 1 1
+bin 1 1
+bli 1 1
+buu 1 1
+buf 1 1
+cme 1 0
+cgg 1 1
+dag 1 0
+bvx 1 1
+ema 1 1
+enn 1 1
+ewe 1 0
+ewo 1 1
+pym 1 1
+gmm 1 1
+gbp 1 1
+gkn 1 1
+hay 1 1
+heh 1 1
+hem 1 1
+dud 1 1
+ilb 1 1
+izi 1 1
+jar 1 1
+dyo 1 1
+jbu 1 1
+kbp 1 1
+kcv 1 1
+ogo 1 1
+kik 1 1
+kin 1 1
+kng 1 1
+kwn 1 1
+lag 1 1
+lef 1 0
+lub 1 1
+lun 1 1
+lue 1 1
+mgh 1 1
+mdm 1 1
+mdt 1 1
+mdd 1 1
+lol 1 1
+mua 1 1
+ndo 1 1
+nmd 1 1
+ndt 1 1
+ndv 1 1
+nga 1 1
+agh 1 1
+ngc 1 1
+ngo 1 1
+nko 1 0
+snf 1 1
+nbw 1 1
+nse 1 1
+mzm 1 1
+wol 1 1
+zga 1 1
+ibo 1 1
+nup 1 1
+nyn 1 1
+nya 1 1
+nzk 1 1
+ann 1 1
+ogu 1 1
+bdu 1 1
+pbr 1 1
+poy 1 1
+rng 1 1
+ndi 1 0
+sag 1 1
+kwy 1 1
+szg 1 1
+sna 1 1
+sif 0 0
+dga 1 0
+sot 1 1
+spp 0 0
+swh 1 1
+tap 1 1
+tlj 1 1
+ifm 1 1
+tll 1 1
+tem 1 1
+tiv 1 1
+tui 1 1
+kcg 1 1
+bav 1 1
+xho 1 1
+yor 1 1
+zne 1 1
+zul 1 1
+  
+  ;
+  

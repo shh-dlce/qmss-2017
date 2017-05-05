@@ -1,0 +1,59 @@
+---
+title: "QMSS R Tutorial Part 8: Final Task"
+output:
+  html_document:
+    code_folding: hide
+---
+
+If you've followed the previous tutorials, you should be able to complete the task below.  It might be a bit challenging, but try to tackle one part of the task at a time, and make sure your results are the expected ones.
+
+**Task**:  The function `points` also has a `col` argument, where you can give it a vector which contains the colour for each point.  Make a map of the world with locations of languages, where the points are coloured by adposition type (variable **ObjectVerbOrder** in the file `data/WALS_ObjectVerbOrder.csv`).  The map **should not** contain languages which have no dominant order.
+
+Write a script for this - don't try and do it directly in the console.
+
+You'll need to:
+
+* Load the WALS data
+* Filter out languages where **ObjectVerbOrder** is `No dominant order`
+* Draw a map
+* Make a vector of possible adposition types.  The function `unique` will be useful here (if you don't know what it does, look up the help page).
+* Make a vector of possible colours.  Either a numeric vector of 1, 2, 3, ... up to the number of colours, or you can use the function `rainbow`.
+* Make a vector of colours, one for each language in d2, where the colour corresponds to the adposition order.  Remember, you can do this by:
+    * indexing by name
+    * using `match`
+* Use the latter vector as the `col` arugment in `points`.
+
+Here's my plot, with a legend for reference.  Click on the `code` button to the right to reveal one possible answer.
+
+```{r warning=FALSE, message=FALSE}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+
+library(maps)
+
+# state what file and variable I'm using
+filename <- "data/WALS_ObjectVerbOrder.csv"
+
+#Load data
+d = read.csv(filename, stringsAsFactors = F)
+
+# Remove NAs
+# We can use d[,variableName] to get the object verb order
+d = d[!is.na(d$ObjectVerbOrder),]
+
+# Remove 'no dominant order'
+d = d[d$ObjectVerbOrder != "No dominant order",]
+orderTypes = unique(d$ObjectVerbOrder)
+colours = rainbow(length(orderTypes))
+names(colours) <-orderTypes
+
+# draw a map
+map()
+# add points
+points(d$longitude, d$latitude, col= colours[d$ObjectVerbOrder])
+# add a legend
+legend(-45,-40, legend=orderTypes, col=colours, pch=16, ncol=2)
+```
+
+----------
+
+Back to the [index](../IntroToR.html)

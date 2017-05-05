@@ -1,0 +1,286 @@
+---
+title: "QMSS R Tutorial Part 1: Basics"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+
+This is a short tutorial on how to use R.  
+
+This format indicates that the text is R code:
+
+```{r eval=F}
+2 + 16
+```
+
+This format indicates that the text is the output of running some code:
+
+```{r echo=F}
+2 + 16
+```
+
+# Starting out
+
+First, you need to download and install R ([from here](http://ftp5.gwdg.de/pub/misc/cran/), I'm using version 3.2.2, but you should install the latest version, or at least check you have version 3 or above).
+
+We will be using RStudio to interface with R (download it [here](https://www.rstudio.com/)).  The program looks something like this (the position of each window might be different for you):
+
+![](images/RStudio.png)
+
+In the upper left is the console - you can type in R arguments here and press enter to run them.  On the top right is the script window.  You can save R scripts here and run lines from them (Control + Enter).  On the bottom right is a space for displaying plots and help, and on the bottom right there is a space for displaying what objects are in the memory at the moment.
+
+For a basic introduction to the RStudio program, you could check out a short youtube video like [this one](https://www.youtube.com/watch?v=5YmcEYTSN7k).
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5YmcEYTSN7k" frameborder="0" allowfullscreen></iframe>
+
+
+
+# Basic assignment
+
+You can run commands in R in two ways.
+
+First, type the following into the console window and hit enter:
+
+```{r}
+3 + 4
+```
+
+You should get the response above.  The second way is to write code in a script file, and then send lines from there to the console window.  I reccommend the second option, because it makes editing previous lines easier, and you have a record of what you did.
+
+There's an example of an R script in [this file](RScriptExample.R).
+
+Let's make a new script.  Click File > New File > R script.  A blank script should appear in the script window.
+
+The first thing we can do is to add a note at the start of the file to say what it's about.  Any text after a hashtag will be ignored by R - these are called *comments*, and are useful for explaining our code to others (and ourselves!).  
+
+So we can add the following line at the top of the file (including the hashtag at the start):
+
+```{r}
+# My first R script
+```
+
+
+You can assign values to variables with the assignment operator **<-**.  Type this into the script window on a new line (each new line is a new command):
+
+```{r}
+x <- 4
+```
+
+Then place your cursor on the line you just typed, and click the `Run` button in the script window (or press Control + Enter).  The line of code should appear in the console window, and in the 'Environment' window you should see a listing for `x` appear.
+
+`x` is now a **variable** which stores the number 4.  
+
+(Note: Some programming languages make a distinction between integer and continuous numbers, but R does not differentiate.)
+
+We can look at the value of `x` by running:
+
+```{r}
+x
+```
+
+Variables can have any name, with a few restrictions:
+
+* They can't include special characters (parentheses + - / * etc.)
+* They don't include spaces (you can use `.` or `_`, e.g. `my.variable` or `my_variable`)
+* They are case sensitive (so `x` would be different to `X`)
+
+Ideally, the name of the variable should make it obvious what it stores.
+
+You can run operations on this variable, like adding, dividing or multiplying:
+
+```{r}
+x + 1
+x - 3
+x / 2
+x * 3
+```
+
+
+Note that the output shows a `[1]`.  You can ignore this - it's there because R likes to do things with sequences.  The code below creates a list of numbers from 1 to 40.  If we run it, we see that the numbers in brackets just help us keep track of how many items are in the sequence:
+
+```{r}
+1:40
+```
+
+Let's make a list of numbers.  To do that, we use the *combine* function `c`:
+
+```{r}
+nums <- c(1,4,5,5,3)
+```
+
+This is called a **numeric vector**.  It's an ordered sequence of numbers.  We can also run operations on this variable:
+
+```{r}
+nums *2
+```
+
+Note that the operation applies to each item in the list.
+
+Some **functions** can also be used with numeric vectors, for example getting the sum of the items.  `sum` is a function which takes one *argument* (a numeric vector), and returns the sum of all the items in that argument.
+
+```{r}
+sum(nums)
+```
+
+The funciton `length` takes one argument (a numeric vector), and returns the length of the vector:
+
+```{r}
+length(nums)
+```
+
+
+We can also make a **character vector** which is just an ordered sequence of strings:
+
+```{r}
+number.names <- c("one",'two','three','four','five')
+```
+
+Individual strings can be surrounded by single or double qutotes, as long as they match up.
+
+You can't use numeric operators with character vectors, but you can use other functions.  `nchar` is a function that takes a single argument (a charater vector) and returns the number of characters in each item:
+
+```{r}
+nchar(number.names)
+```
+
+# Indexing
+
+There are three ways to index items in vectors:
+
+* by index number
+* with a boolean vector
+* by name
+
+
+## Indexing by index number
+
+What is the first item in the vector `nums`?  We can access it by indexing the vector:
+
+```{r}
+nums[1]
+nums[3]
+```
+
+Note that **indexing in R starts from 1** (asking for item 0 will return an empty item).  
+
+We can also extract several items at a time.  Here, we ask for the first three items of `nums`
+
+```{r}
+nums[c(1,2,3)]
+```
+
+Note that, in R, sequentially ordered numbers can be quickly made using the colon operator:
+
+```{r}
+nums[1:3]
+nums[2:4]
+nums[3:1]
+```
+
+## Indexing with a boolean vector
+
+A boolean vector is a sequence of True and False values.  For example:
+
+```{r}
+y <- c(TRUE, TRUE, FALSE, FALSE, TRUE)
+```
+
+You can pass boolean vectors to some funcitons.  For example, `sum` will return the number of `TRUE` values:
+
+```{r}
+sum(y)
+```
+
+
+> **Task**: can you apply the functions `sum` and `length` to boolean vectors?
+
+You can use a boolean vector to index another vector:
+
+```{r}
+nums[y]
+```
+
+This returns each item in `nums`, as long as the corresponding item in `y` is `TRUE`.
+
+This is useful because boolean values can be generated by applying logical operators to vectors.  
+
+```{r}
+nums > 3
+```
+
+This returned a boolean vector where each item was `TRUE` if the corresponding item in `nums` was greater than 3.
+
+Here are some logical operators:
+
+* `>` : greater than
+* `<` : less than
+* `>=` : greater or equal to
+* `<=` : less or equal to
+* `==` : is equal to (note *two* equals signs)
+* `!=` : is *not* equal to
+
+> **Task**: make a list of booleans where the items are `TRUE` if each corresponding item of `nums` is less or equal to 3
+
+Now we can use a boolean vector to index another vector.  For example, this code returns the items of `nums` where `nums` is greater than 3.
+
+```{r}
+nums[nums > 3]
+```
+
+It's worth spending some time understanding how indexing works, because it's used often.
+
+Another useful operator is `%in%`.  It tests whether items in the vector before it exist in the vector after it:
+
+```{r}
+AshleyFaveNums <- c(1,3,5,7,9)
+BrettFaveNums <- c(4,5,2,3)
+BrettFaveNums %in% AshleyFaveNums
+```
+
+> **Task**: make a list of booleans where the items are `TRUE` if each corresponding item of `nums` is either 5 or 1.
+
+```{r include =F}
+nums %in% c(5,1)
+```
+
+
+> **Task **: Using y to index `nums` worked because the length of the two vectors are the same.  What happens if you make another variable `y2` which only has 3 boolean items, and try to index `nums` using that?
+
+```{r include=F}
+y2 = c(TRUE, FALSE, TRUE)
+nums[y2]
+```
+
+## Indexing by name
+
+Data structures can recieve names.  For example, our `nums` variable could be the favourite numbers of our friends.  We can create a character vector of our friends' names, then set this as the names of the items in `nums`.
+
+```{r}
+friends = c("Ashley","Brett","Casey","Drew","Emery")
+names(nums) = friends
+nums
+```
+
+Now that each item in `nums` has a name, we can index `nums` by name:
+```{r}
+nums["Brett"]
+nums[c("Brett","Casey")]
+```
+
+> **Task**:  Find the favourite numbers of all my friends who have more than 4 characters in their name.
+> 
+> Hint: build this up step by step.  First of all, get the number of characters in each name, then test whether this number is greater than 4.  This should result in a vector of booleans.  Then index nums using this vector.
+
+```{r include=F}
+nums[nchar(friends)>4]
+```
+
+---------------
+
+Go to the [next tutorial](IntroToR_2.html)
+
+Back to the [index](../IntroToR.html)

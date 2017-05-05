@@ -1,0 +1,281 @@
+---
+title: "QMSS R Tutorial Part 3: Reading data"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+# Reading data from a csv file
+
+Make a new R script file in RStudio, and copy and paste some of the commands below.  To run a line from the script, place the cursor on the line and hit Control + Enter.
+
+When we read data, we need to tell R where the files are stored.  The first step is usually to set the **working directory**.  This sets the folder that R will look in to find data, and to write files to.
+
+Set the working directory using the function `setwd`.
+
+```{r eval=F}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+```
+
+Next, we can read in a csv file to an object called a **data frame**.  
+
+**WARNING**: by default, read.csv converts some strings to *factors*, which can complicate things later on.  For now, we'll turn this off by using the `stringsAsFactors` argument.
+
+```{r}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+d <- read.csv("data/WALS_WordOrder.csv", stringsAsFactors = F)
+```
+
+It's a good idea to check how big the data frame is, using `dim` (for 'dimensions'):
+
+```{r}
+dim(d)
+```
+
+This data frame has `r nrow(d)` rows and `r ncol(d)` columns.
+
+
+## Summarising data
+
+Data frames are 2-dimensional objects - they have rows and columns.  Typically, rows are data points and columns are variables.  We can look at the data in many ways.
+
+> **Task**: What happens if you type `d` into the console to see what's inside the object `d`?
+
+The function `str` can be used to view the structure of an object:
+
+```{r}
+str(d)
+```
+
+The function `head` can be used to look at just part of the data.  Here we see the data for the first 6 rows of the data frame.  It's a list of languages, with data on glottocodes, language family, geographic location and word order.
+
+```{r}
+head(d)
+```
+
+Rows and columns are represented.  If the number of columns is too great to represent in the width of the window, then they will be added seperately below.
+
+# Indexing data frames
+
+We can index the data frame in different ways.  When indexing 1-dimensional objects like vectors, we used square brackets with a single number.  With 2-dimensional objects like data frames, we need to specify 2 indices:  what rows we want, and what columns we want.
+
+For example, show row 1, column 2:
+
+```{r}
+d[ 1 , 2 ]
+```
+
+
+For example, show rows 1, 4 and 6, and all columns (for all columns, we leave the second argument blank):
+
+```{r eval=F}
+d[ c(1,4,6) , ]
+```
+
+Or all rows for the 6th column:
+
+```{r eval=F}
+d[ , 6]
+```
+
+We can also refer to columns by their names.  First, we use `names` to see the names of columns:
+
+```{r}
+names(d)
+```
+
+Then we get all rows of the column **latitude**, using the special dollar sign character `$`.  
+
+```{r eval=F}
+d$latitude
+```
+
+We assign the latitude to a variable called `allLatitude`, then get the first 3 items:
+
+```{r}
+allLatitude <- d$latitude
+allLatitude[1:3]
+```
+
+There are many ways of indexing this in the same way.  
+
+```{r eval=F}
+d[1:3, ]$latitude
+d[1:3, c("latitude")]
+d$latitude[1:3]
+```
+
+The first method above is very common:  First we select the rows we are interested in, including all columns.  Then we ask for the **latitude** column using the dollar sign.
+
+The funciton `table` summarises the counts of each unique value in a variable.  So we can summarise a factor such as **BasicWordOrder**.
+
+```{r}
+table(d$BasicWordOrder)
+```
+
+We can provide multiple arguments to `table`, which will result in contingency tables:
+
+```{r}
+table(d$BasicWordOrder,d$AdpositionOrder)
+```
+
+
+
+> **Task**: Make a boolean vector which is `TRUE` if the latitude of a language is greater than 0, and `FALSE` otherwise.  Assign this to a variable named `northernHemisphere'.
+
+```{r include=F}
+northernHemisphere <- d$latitude > 0
+```
+
+
+> **Task**: Make a table of counts of basic word order types for languages in the northern hemisphere.  *Hint*: you should index the rows with the variable northernHemisphere and the **BasicWordOrder** column.
+
+```{r include=F}
+table(d[northernHemisphere,]$BasicWordOrder)
+```
+
+## Making a new variable inside a data frame
+
+In the code above, we made variable called `northernHemisphere`.  Instead of doing this, we can add this directly to the data frame as follows:
+
+```{r}
+d$NHemisphere <- d$latitude > 0
+head(d)
+```
+
+How many languages are in the North-Eastern quadrant of the Earth?  For this we need to find langauges which are in the Northern Hemisphere, and which have a longitude greater than one.  
+
+We can combine boolean values with boolean operators like `&` (and) and `|` (or):
+
+```{r}
+# AND
+c(TRUE, TRUE, FALSE) & c(TRUE, FALSE, FALSE)
+# OR
+c(TRUE, TRUE, FALSE) | c(TRUE, FALSE, FALSE)
+```
+
+The code below makes a variable which is `TRUE` only when the latitude is greater than 0 and the longitude is greater than zero.  We then take the `sum` of this, which tells us how many items in this variable are `TRUE`.
+
+```{r}
+northEastQ <- d$latitude>0 & d$longitude > 0
+sum(northEastQ)
+```
+
+Similarly, we could look at the table of basic word order types for the North-Eastern quadrant:
+
+```{r}
+table(d[d$latitude>0 & d$longitude , ]$BasicWordOrder)
+```
+
+
+
+
+## Combining data from different sources
+
+We'd like to know the languaage family associated with each langauge, according to the glottolog database.  The file `data/Glottolog_Data.csv` includes the language family of each language in the WALS data above.  We should be able to match up the data in the two databases using the glottocode.
+
+That is, we want to match the glottolog codes in the WALS data to the glottolog codes in the Glottolog data, then add the language family from Glottolog into the WALS data frame.
+
+> **Task**: Load the data in `data/Glottolog_Data.csv` into a data frame called glottoData.
+
+```{r include=FALSE ,echo=c(2)}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+glottoData <- read.csv("data/Glottolog_Data.csv", stringsAsFactors = F)
+```
+
+> **Task** What are the names and formats of the variables in glottoData?
+
+```{r include=FALSE}
+names(glottoData)
+```
+
+### Using names
+
+If we're sure that a variable has no repeated values, then we can use naming to combine data.  First we assign names to the rows of our data frame:
+
+```{r}
+rownames(glottoData) <- glottoData$glotto.code
+head(glottoData)
+```
+
+We can see that the rownames on the far left have changed to be the glotto codes.  We can now index the `glottoData` with names:
+
+```{r}
+glottoData["achi1257",]
+# The first two codes in d:
+d$glottocode[1:2]
+# the rows in glottoData corresponding to the first two codes in d:
+glottoData[d$glottocode[1:2], ]
+```
+
+The code below makes a new variable in `d` called **family**, and assigns to it: glottoData, selecting rows by names according to the glottocode, then selecting the column **glotto.family**.
+
+```{r}
+d$family <- glottoData[d$glottocode,]$glotto.family
+head(d)
+```
+
+However, this method relies on having no missing data and unique rownames, so better options are below:
+
+### Using `match`
+
+`match` is a function which takes two arguments: a vector of things to be matched, and a vector of values to be matched against.  For each item of the first vector, it returns the *index* of that item in the second vector:
+
+```{r}
+match(c(3,5,2), c(2,3,5))
+```
+That is, 3 is the second item in the second vector, 5 is the 3rd item in the second vector and 2 is the 1st item in the second vector.
+
+```{r}
+match(c("c","b","b",'a'), c("a","b","c"))
+```
+
+If we have three glottocodes:
+
+```{r}
+gx <- c("paiw1248", "icel1247", "port1285")
+```
+
+We can use match to get the families of these languages.  The code below asks to find where the codes in `gx` are in the glottoData variable **glotto.code**.  These are the *row numbers* where the glotto codes correspond.  It then uses these row numbers to index glottoData and return the **glotto.family** variable:
+
+```{r}
+# example of what match returns:
+match(gx,glottoData$glotto.code)
+
+glottoData[match(gx,glottoData$glotto.code), ]$glotto.family
+```
+
+We can match every item in `d` and make a new variable this way:
+
+```{r}
+d$family <- glottoData[match(d$glottocode, glottoData$glotto.code) , ]$glotto.family
+```
+
+### Using `merge`
+
+Two data frames can be merged using `merge` and specifying which columns should be used to align the data.
+
+The code below makes a new variable `d2` which merges `d` and `glottoData` by matching on the glottolog code.  Note that the name of the variable in each database is different, so we have to give both seperately.
+
+```{r}
+d2 <- merge(d, glottoData, by.x='glottocode', by.y='glotto.code')
+head(d2)
+```
+
+Note that `d2` includes both columns in `glottoData` (the name of the language according to glottolog and the name of the language family), not just the family.
+
+> **Task**:  Could you match the databases on the name of the language?  Use `d2` to find how many languages have different names in Glottolog versus WALS.
+
+```{r include=F}
+sum(d2$Name!=d2$glotto.name)
+```
+
+
+
+---
+
+Go to the [next tutorial](IntroToR_4.html)
+
+Back to the [index](../IntroToR.html)
