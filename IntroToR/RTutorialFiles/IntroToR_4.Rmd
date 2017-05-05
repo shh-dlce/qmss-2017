@@ -1,0 +1,223 @@
+---
+title: "QMSS R Tutorial Part 4: Processing data"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+# Basic stats
+In the last section, we used a database of word orders.  We'll use that again here:
+
+```{r}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+d <- read.csv("data/WALS_WordOrder.csv", stringsAsFactors = F)
+glottoData <- read.csv("data/Glottolog_Data.csv", stringsAsFactors = F)
+d2 <- merge(d, glottoData, by.x='glottocode', by.y='glotto.code')
+```
+
+The data frame `d2` now includes variables **latitude** and **family**.
+
+## Mean, standard deviation, minimum and maximum
+
+What is the mean latitude of languages?
+
+The function `mean` takes a numeric vector and returns the mean (average).  Other simple functions include `sd`, `max` and `min`:
+
+```{r}
+mean(d2$latitude)
+sd(d2$latitude)
+max(d2$latitude)
+min(d2$latitude)
+```
+
+Most languages are within about 20 degress of the 10th parallel!  
+
+## Basic statistics
+
+I have a hypothesis that cultures in colder climates need to huddle together for warmth, so there are more people around, and thus it's easy to confuse who is being talked about.  This should promote SOV order.  In hot places, this isn't so important, so the opposite VSO should be more frequent.
+
+I predict that the mean latitude of SOV should be greater than the mean latitude of VOS.
+
+To test this, I make two variables:  one of latitudes for SOV languages and one for latitude for VOS languages.  I then pass these two to the function `t.test` which runs a two-sample t-test:
+
+```{r}
+
+SOV.latitude = d2[d2$BasicWordOrder=="SOV",]$latitude
+VOS.latitude = d2[d2$BasicWordOrder=="VOS",]$latitude
+
+t.test(SOV.latitude, VOS.latitude)
+```
+
+The output to the conslode has a lot of statistics, including the pvalue and t score, and mean of each group.  We can also assign the result to a variable, from which we can access individual parts of the results.
+
+```{r}
+tResult <- t.test(SOV.latitude, VOS.latitude)
+tResult$statistic
+tResult$p.value
+```
+
+
+My hypothesis is correct and I have changed the course of linguistics.
+
+To go further, I test whether latitude is predicted more widely by basic word order or adposition.  I use a *linear model* using `lm`.  This takes a *function* as an argument, alongside a data frame of data.
+
+A function has a dependent variable first, followed by a tilde `~`, then a list of dependent variables seperated by `+`.  All variables should be present in the data frame d2:
+
+```{r}
+model1 = lm(latitude ~ BasicWordOrder + AdpositionOrder, data=d2)
+```
+
+The `summary` function gives us a table of parameter estimates, t-values and p-values.
+
+```{r}
+summary(model1)
+```
+
+No need to worry about the theory now, just the basic idea:  You can apply regression or other statistical tests to a set of data, and assign the results to a variable.  That variable (`model1` above) now stores the output of the statistical test.
+
+
+## tapply
+
+Which language family has the greatest spread in latitude?
+
+For this we need to use `tapply`, which takes a vector of objects, groups the objects according to a second vector, then applies a function to each group. 
+
+For example, this code works out the standard deviation of languages within each family.  The first argument is what we want to process, the second argument defines how we want to group the data, the thrid argument is the funciton we want to apply (without brackets).  
+
+```{r}
+langFamLatitudeSD <- tapply(d2$latitude, d2$glotto.family, sd)
+```
+
+We then sort the data using `sort` (in decreasing order) and show the first few results using `head`.
+
+```{r}
+langFamLatitudeSD.sorted <- sort(langFamLatitudeSD, decreasing = TRUE)
+head(langFamLatitudeSD.sorted)
+```
+
+`r names(langFamLatitudeSD.sorted)[1]` has the highest standard deviation of languages by latitude!
+
+> **Task**:  Which basic word order type has the higest mean latitude?
+
+## Custom functions
+
+Which language family has the largest *range* in latitude?
+
+To answer this, we need to know the difference between the maximum and minimum latitude for each family.  There's no simple function that can calculate this, but we can make our own.
+
+First, how would be calculate the range?  Given the list of numbers below, we can work out the maximum and minimum value, then subtract one from the other:
+
+```{r}
+x <- c(1,4,6,2,99,2)
+max(x) - min(x)
+```
+
+
+Functions in R are defined similarly to other objects.  Below we create a function called `rangeDiff` which takes one argument (a list of numbers) and returns one number (the range of the numbers).
+
+* We declare it to be a function with one argument named `x`.  
+* We use curly brackets to indicate where the code of the function begins and ends.  
+* Then we create a variable `r` which calculates the range.
+* We pass the value of `r` back to the user with the function `return`.  
+
+```{r}
+rangeDiff <- function(x){
+  r <- max(x) - min(x)
+  return(r)
+}
+```
+
+After running these lines, nothing will happen, but we can now use this function in other parts of the code.
+
+```{r}
+x <- c(1,4,6,2,99,2)
+rangeDiff(x)
+lotteryNums <- c(64,92,47,11)
+rangeDiff(lotteryNums)
+```
+
+Now we can use `rangeDiff` to work out the range for each language family:
+
+```{r}
+langFamLatitudeRange <- tapply(d2$latitude, d2$glotto.family, rangeDiff)
+langFamLatitudeRange.sorted <- sort(langFamLatitudeRange, decreasing = TRUE)
+head(langFamLatitudeRange.sorted)
+```
+
+`r names(langFamLatitudeRange.sorted)[1]` has the largest range in languages by latitude!
+
+
+
+
+# Making plots
+
+Plots are made using functions, too.  The most basic function is `plot`, which just makes an x-by-y plot.
+
+```{r}
+plot(d2$longitude, d2$latitude)
+```
+
+
+`hist` is a function which produces a histogram:
+
+```{r}
+hist(d2$latitude)
+```
+
+The `maps` package helps plot maps:
+
+```{r}
+library(maps)
+map()
+```
+This produces a map of the world and displays it in the plot window.  We can add stuff on top with functions like `points` and `abline`:
+
+```{r}
+# draw a map of the world
+map() 
+# add locations of languages
+points(d2$longitude, d2$latitude)
+# add a horizontal line at the equator
+abline(h = 0, col = 2)
+```
+
+There are many other types of plot.  The easiest way to find a recipie for making a plot is to use a gallery ([like this one](http://www.r-graph-gallery.com/)).
+
+## Colours
+
+Note the two extra arguments in abline.  The first states that the line should be horizontal, at position 0 on the y axis, and the second indicates the colour that the line should be.
+
+Colours in R can be specified using:
+
+* Numbers referring to the default *palette*, 1 = black, 2 = red, 3 = green etc.
+* A character string of basic colour names
+* A hex or RGB value, usually produced using a helpful function like `rainbow`, `heat.colors` or the `RColorBrewer` package.
+
+
+## Writing plots to files
+
+You can write plots to a pdf using the function `pdf`.  Add the `pdf` funciton before the first plotting command, then `dev.off()` to stop writing to the file.
+
+```{r eval=F}
+# start writing
+pdf(file="data/myMap.pdf", width= 7, height = 7)
+  # draw a map of the world
+  map() 
+  # add locations of languages
+  points(d2$longitude, d2$latitude)
+  # add a horizontal line at the equator
+  abline(h = 0, col = 2)
+# stop writing.
+dev.off()
+```
+
+
+
+
+--------
+
+Go to the [next tutorial](IntroToR_5.html)
+
+Back to the [index](../IntroToR.html)

@@ -1,0 +1,46 @@
+---
+title: "QMSS R Tutorial Part 7: Saving results"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+The best way to save results is in universally readable formats, for instance csv files for data or pdf files for graphs (see the previous parts).  However, R does allow saving objects directy, which is sometimes useful with very complex data types.
+
+# Saving an R object
+
+You can use the `save` function to save an object.  The code below will create a file called "secretCodes.Rdat" which will store a variable.
+
+```{r}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+
+secretCodes <- c(1,6,3,8,10)
+save(secretCodes, file="data/mySuperSecrets.Rdat")
+```
+
+We can load the file again (maybe in a different script), and the object will be re-loaded into the memory.
+
+```{r echo=2:3}
+setwd("~/Documents/Teaching/JenaSpringSchool/org/spring-school/IntroToR")
+load("data/mySuperSecrets.Rdat")
+secretCodes
+```
+
+Note that the name of the file and the name of the object don't have to match up.
+
+# Saving a workspace
+
+It's possible to save all objects loaded into the memory (the workspace) in a single file that you can re-open to pick up where you left off.  RStudio will give you an option to save the workspace each time it quits.  
+
+While this can be convenient, it's not recommended.  If an object is required by the script, then it should be created by the script.  It's easy to create an object, save it in the workspace, but forget to add the lines of code to the script.  When developing scripts for scientific research, you want the code to be reproducible by others.  So forcing yourself to run the script from scratch a few times is good practice.
+
+
+
+
+---
+
+Go to the [next tutorial](IntroToR_8.html)
+
+Back to the [index](../IntroToR.html)
