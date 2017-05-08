@@ -1,0 +1,107 @@
+---
+title: "QMSS R Tutorial: Answers to tasks"
+output: html_document
+---
+
+
+# Part 1
+
+> **Task**: can you apply the functions `sum` and `length` to boolean vectors?
+
+Yes - sum counts the number of `TRUE` values.
+
+
+> **Task**: make a list of booleans where the items are `TRUE` if each corresponding item of `nums` is less or equal to 3
+
+```{r eval=F}
+nums <= 3
+```
+
+> **Task**: make a list of booleans where the items are `TRUE` if each corresponding item of `nums` is either 5 or 1.
+
+```{r eval=F}
+nums %in% c(5,1)
+```
+
+> **Task **: Using y to index `nums` worked because the length of the two vectors are the same.  What happens if you make another variable `y2` which only has 3 boolean items, and try to index `nums` using that?
+
+```{r eval=F}
+y2 = c(TRUE, FALSE, TRUE)
+nums[y2]
+```
+
+
+> **Task**:  Find the favourite numbers of all my friends who have more than 4 characters in their name.
+> 
+> Hint: build this up step by step.  First of all, get the number of characters in each name, then test whether this number is greater than 4.  This should result in a vector of booleans.  Then index nums using this vector.
+
+```{r eval=F}
+nums[nchar(friends)>4]
+```
+
+
+# Part 3
+
+> **Task**: What happens if you type `d` into the console to see what's inside the object `d`?
+
+You get a lot of data printed to the screen!  Very unhelpful.
+
+
+> **Task**: Make a boolean vector which is `TRUE` if the latitude of a language is greater than 0, and `FALSE` otherwise.  Assign this to a variable named `northernHemisphere'.
+
+```{r eval=F}
+northernHemisphere <- d$latitude > 0
+```
+
+
+> **Task**: Make a table of counts of basic word order types for languages in the northern hemisphere.  *Hint*: you should index the rows with the variable northernHemisphere and the **BasicWordOrder** column.
+
+```{r eval=F}
+table(d[northernHemisphere,]$BasicWordOrder)
+```
+
+
+> **Task**: Load the data in `data/Glottolog_Data.csv` into a data frame called glottoData.
+
+```{r eval=FALSE}
+glottoData <- read.csv("data/Glottolog_Data.csv", stringsAsFactors = F)
+```
+
+> **Task** What are the names and formats of the variables in glottoData?
+
+```{r eval=FALSE}
+names(glottoData)
+```
+
+> **Task**:  Could you match the databases on the name of the language?  Use `d2` to find how many languages have different names in Glottolog versus WALS.
+
+```{r eval=F}
+sum(d2$Name!=d2$glotto.name)
+```
+
+
+# Part 4
+
+> **Task**:  Which basic word order type has the higest mean latitude?
+
+
+```{r eval=F}
+langFamLatitudeMEAN<- tapply(d2$latitude, d2$glotto.family, mean)
+langFamLatitudeMEAN.sorted <- sort(langFamLatitudeMEAN, decreasing = TRUE)
+head(langFamLatitudeMEAN.sorted)
+```
+
+
+# Part 5
+
+> **Task**: What happens if you try to calculate the sum of this variable?
+
+You get NA returned!
+
+
+> **Task**: How many datapoints in ObjectVerbOrder are missing?  How many glottocodes are missing?  Remember that `is.na` creates a vector of booleans and `sum` can count the number of `TRUE` values in a vector.
+
+```{r eval=F}
+sum(is.na(d$ObjectVerbOrder))
+sum(is.na(d$glottocode))
+```

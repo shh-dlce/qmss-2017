@@ -1,0 +1,263 @@
+---
+title: "QMSS R Tutorial Part 2: Facing problems and finding help"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+# Installing packages
+
+The basic functions available in R can do a lot, but the real benefit is the huge number of extra packages available.  R packages are collections of functions which perform many different tasks.
+
+Install packages using `install.packages`:
+
+
+```{r eval=F}
+install.packages("maps")
+```
+
+Then load them into memory with `library`:
+
+```{r eval=F}
+library(maps)
+```
+
+You only need to install packages once, but you need to load packages at the start of every script.
+
+
+# Code completion
+
+In RStudio, code written in the script editing window will be underlied in red if there is a problem.  Hover over the red "x" sign on the left to get a hint of what's wrong.
+
+![](images/CodeError.png)
+
+In many cases, RStudio will prompt you with what it guesses you are trying to type.  Halfway through a variable or function name hit the tab button to see possible completions.  Inside a function, hit tab to see the list of possible options.
+
+The **Environment** window will show a list of objects that are currently loaded, which can be useful, but should not be a substitue for searching the memory with code.
+
+# Finding help
+
+Most functions in R have a help page.  To see the help page, typea `?` before the function name:
+
+```{r}
+?length
+```
+
+Or search for a key term using double `?`:
+
+```{r}
+??chi
+```
+
+
+In RStudio, this will bring up the help page in one of the windows.  Help pages have a common format:
+
+* Description: What does the function do
+* Usage: syntax of the function
+* Arguments - a list of arguments that the function takes, including what type of objects
+* Details - Details of how the function works (often not that relevant)
+* Value - What the function returns
+* References
+* See also - Similar functions (this can be helpful)
+* Examples - a set of examples of how the code is used
+
+If we bring up the help page for the function `length`, we see that it takes one argument - an object `x` which can be any R object.
+
+It's also useful to note that at the bottom of the page, the help file tells you which package a function belongs to.  There's a link to the package index, where you can find more functions.
+
+## Manditory and optional arguments
+
+If we bring up the help page for `nchar`, we see that its usage is: 
+
+> nchar(x, type = "chars", allowNA = FALSE, keepNA = FALSE)
+
+All arguments except the first one have an equal sign, then some value.  These are optional arguments.  It is not necessary to specify them when running a function, since they will take on the default vaules specified above.  So, for example, by default, nchar returns the number of human-readable characters, but it is possible to change this to measure the number of bytes.  In strings with UTF-8 characters, these can return different values:
+
+```{r}
+nchar("Seán")
+nchar("Seán", type="char")
+nchar("Seán", type="bytes")
+```
+
+The most frequent use of optional arguments is when building graphs or when deciding how to handle NA values.
+
+## Using the internet
+
+If you can't find a function that does what you want, or have a problem, try searching the internet using your favourite search engine.  You should include "R" in the search term, or if that's too vague (e.g. searching "R correlation"" brings up stuff about the correlation coefficient *r*), try using "R cran *your_term*.  CRAN is the Comprehensive R Archive Network, and usually appears on appropriate pages.
+
+Useful websites include [Quick R](http://www.statmethods.net/) which provides short examples of how to do various tasks.
+
+[R graph gallery](http://www.r-graph-gallery.com/) lets you search by graph image type, then shows the code for producing that graph.
+
+The Stack overflow website usually comes up in internet searches.  This includes problems posted by people, then answers which are voted up by users.  Usually, you can skip reading the problem and go straight to the answer.  For example, [how to merge two data frames](http://stackoverflow.com/questions/1299871/how-to-join-merge-data-frames-inner-outer-left-right)
+
+## Task views
+
+R task views are a collection of packages and functions which complete a certain task.  Visit: [https://cran.r-project.org/web/views/](https://cran.r-project.org/web/views/).  
+
+For example, the task view for Phylogenetics has a list of useful packages and what they can do:
+[https://cran.r-project.org/web/views/Phylogenetics.html](https://cran.r-project.org/web/views/Phylogenetics.html)
+
+[Task view for Natural Language Processing](https://cran.r-project.org/web/views/NaturalLanguageProcessing.html)
+
+[Task view for Machine learning](https://cran.r-project.org/web/views/MachineLearning.html)
+
+
+## Cheat seets
+
+There are several summaries of useful functions on the internet, e.g. [this one](https://cran.r-project.org/doc/contrib/Short-refcard.pdf)
+
+# Handling errors
+
+It's common to make errors when composing code in R.
+
+In the line below, we forgot to add a comma between two numbers:
+```{r, eval = FALSE}
+x <- c(1, 2, 3, 4  5)
+```
+```{r, echo = FALSE}
+cat('Error: unexpected numeric constant in "x <- c(1, 2, 3, 4  5"')
+```
+
+An error message comes up, indicating that there is a problem.  However, the meaning is not clearly connected to the solution (put a comma between 4 and 5).  The best approach is to **REMAIN CALM**.  Debugging code takes practice, but here are some tips.
+
+## Common errors and how to handle them
+
+Below is a list of the most common errors made in R, according to [noamross](https://github.com/noamross/zero-dependency-problems/blob/master/misc/stack-overflow-common-r-errors.md).
+
+The left side of the error usually tells you where the problem is, and the right side what kind of problem it is.  Below I've highlighted keywords that might be useful.
+
+There's no need to read this now, but come back to it if you have trouble.
+
+---
+
+> Nothing is happening after I run some code
+
+* At the top of the console window on the right, is there a "loading" symbol or "stop" symbol?  If so, R is still running something.
+    
+    * If it's taking too long, place the cursor in the console window and hit 'escape' to stop the code running (or press the little 'stop' sign).
+    * If it's not responding, force RStudio to quit and restart.
+    * If this keeps happening, try running the code on a smaller sample of data first.
+
+* Is the last line in the console blank, except for a '+' sign?  If so, R is expecting more input
+
+    * Hit escape to cancel the currently typed code
+    * Did you run all the code you intended to run?
+    * Have you left out a closing bracket, or added too many opening brackets?
+
+---
+
+> My code used to work, now it doesn't.
+
+Maybe your code was relying on a line that has now been moved or removed.  Try deleting everything in memory and running the code from the start.
+
+Remove all objects from the memory using the following code.  This will not remove files on your hard drive, and it won't delete any script files, but it will remove any variables and data that you have not written to a file:
+
+```{r eval=FALSE}
+rm(list=ls())
+```
+
+---
+
+> Error: **could not find function** "performance"
+
+> Error: sunm **is not a function**.
+
+R can't find a function with that name.
+
+* Did you spell it right?
+* Did you load the package where this function is stored?
+
+---
+
+>  Error in eval(expr, envir, enclos): object 'x' **not found**
+
+>  Error in unzip(temp, list = TRUE) : 'exdir' **does not exist**
+
+R can't find the object (x or exdir, in the cases above) when running the part of code in the first section.
+
+* Did you spell it right (check uppercase/lowercase)?
+* Did you create the object yet (maybe it's created in the script above)?
+
+---
+
+>  Error in if (file.exists(sourceName)) { : **argument is of length zero**
+
+R can find the object, but it is empty.  
+
+* Take a look at the value of the object.  Is there a part of the code before this which is excluding all data?
+
+---
+
+>   Error in if (.global.summary[i] == TRUE) { : **missing value where TRUE/FALSE needed**
+
+The inside this `if` statement is evaluating to **NA**.  
+
+* Are there missing values (NA)?
+
+---
+
+>  Error in read.csv(file) : **cannot open the connection**
+
+R can't find the file you're trying to load
+
+* Does the file exist?
+* Is the filename correct?
+* Is the working directory correct? (check with `getwd()`)
+
+---
+
+>  Error in UseMethod("predict") : 
+>    **no applicable method** for 'predict' applied to an object of class "HMMFitClass"
+
+You are trying to apply a function to an object that the function can't handle.  
+
+* Is the object of the right type?  (e.g. have you converted a matrix to a distance objet).  Check the help file to see what type you need, then use the funciton `typeof` to check that your variable really is the right type.
+
+---
+
+> Error in data[, 2:4] : **subscript out of bounds**
+
+In the code, you're trying to access rows or columns that don't exist in the data.
+
+* Check the data frame - are there the right number of columns and rows?  Did you accidentaly exclude some rows or columns in the previous code?
+* Check the variable that you're using to index the data frame - are there values outside the range of rows and columns?
+
+---
+
+> Error in `[.data.frame`(d, , x) : **undefined columns selected**
+
+R can't find the columns you're looking for.
+
+* Did you forget to reference columns?  If you have code like `data[1:3]`, you need to change it to something like `data[1:3,]`.
+* Are you referring to columns that don't exist in the data frame?  Check that you're not excluding variables in previous code.
+* Are there NA values in the variable you're using to index the data frame?  These will cause errors.  Take out NA values using the function `is.na`.
+
+---
+
+> Error in NextMethod(.Generic) : 
+>   number of items to replace **is not a multiple of replacement length**
+
+This usually occurs when you're indexing one variable with another, but the lengths are different.
+
+* Check the length of the data and the length of the indexing variable are the same.  If not, perhaps you modified one without meaning to.  Run all the previous code again.
+* Are you referencing the the wrong data?  e.g. is one list generated from `langs1` and the other generated from `langs1b`?
+
+---
+
+> Error in data.frame(tmp, i, value = integer(0)) : replacement has 0 rows, **data has** 117
+
+> Error in data.frame`(`tmp`, "Speaker", value = 105L) : replacement has 1 row, data has 0
+
+When trying to make a new variable in a data frame, the code on the right creates too many or too few rows for the data frame.
+
+* Run the right side on its own.  Is it producing the right data?
+
+
+--------
+
+Go to the [next tutorial](IntroToR_3.html)
+
+Back to the [index](../IntroToR.html)

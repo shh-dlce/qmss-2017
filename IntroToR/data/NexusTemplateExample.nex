@@ -1,0 +1,29 @@
+#NEXUS
+
+BEGIN TAXA;
+	TITLE Taxa;
+	DIMENSIONS NTAX=5;
+	TAXLABELS
+		Welsh
+		Irish
+		Breton
+		Cornish
+		Manx
+	;
+END;
+
+
+
+BEGIN CHARACTERS;
+	TITLE  Character_Matrix;
+	LINK TAXA = Taxa;
+	DIMENSIONS  NCHAR=2;
+	FORMAT DATATYPE = STANDARD GAP = - MISSING = ? SYMBOLS = "  0 1";
+	MATRIX
+	Welsh  1 1
+	Irish  1 0
+	Breton  0 1
+	Cornish  1 1
+	Manx  0 0
+
+;
