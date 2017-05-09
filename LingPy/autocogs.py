@@ -166,7 +166,7 @@ def cognates_lexstat():
     
     lex = LexStat('mikronesian.tsv', segments='tokens', check=True)
     lex.get_scorer(runs=10000)
-    lex.output('tsv', filename='mikronesian.bin')
+
     lex.cluster(method='turchin')
     lex.cluster(method="sca", threshold=0.45)
     # show the cognate sets, stored in "turchinid" for the words for "Eight"
@@ -178,7 +178,9 @@ def cognates_lexstat():
             lex[idx, 'value'], 
             lex[idx, 'turchinid'], 
             lex[idx, 'scaid']))
+    lex.output('tsv', filename='mikronesian.bin')
 
+    
 def cognates_infomap():
     
     try:
