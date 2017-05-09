@@ -11,7 +11,7 @@ curation via git means:
 It turns out that quite a few datasets important to us can be modelled in this way, and CSV - everyone's 
 favorite format for tabular data - is gaining popularity every day:
 
-- [Glottolog](https://github.com/):
+- [Glottolog](https://github.com/clld/glottolog):
   - Bibliographic information is stored as set of BibTeX files
   - Language information is stored as one INI file per language
   - directory tree models the language classification
