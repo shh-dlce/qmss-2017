@@ -1,0 +1,197 @@
+---
+title: "Trees and Networks / Genetic Data - Tutorial - QMSS 2017"
+author: "chiara barbieri"
+date: "10th May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Working with a matrix of distances, genetic + linguistic
+
+Handle genetic alignments, genetic distance between populations, build trees and networks.
+Genetic data from GeLaTo (web platform under construction) elaborated from Pemberton et al. 2013 - autosomal microsatellites. <http://www.g3journal.org/content/3/5/891>
+
+## 1. Import the data
+
+
+Import the table with the information for the genetic population samples and the genetic data
+```{r, message=FALSE, warning=FALSE}
+listaComplete<-read.table("listaComplete.txt",sep="\t", header=T)
+rownames(listaComplete)<-listaComplete$populationName
+```
+Import the matrix of pairwise distances between populations
+
+```{r}
+matGen<-read.csv("PopDistance.csv")
+colnames(matGen)<-rownames(matGen)
+```
+Import the matrix of linguistic distances
+```{r}
+matLin<-read.table("DistLangOceania.txt", sep="\t")
+colnames(matLin)<-rownames(matLin)
+```
+Select the genetic populations that match the languages in the matrix
+```{r}
+colnames(matLin)->listaPopOceania  #create the object listaPopOceania, the populations in the match
+listaOceania<-listaComplete[listaPopOceania,] #subset of the list of genetic populations
+
+matGenOceania<-matGen[which(rownames(matGen)%in%listaPopOceania),which(colnames(matGen)%in%listaPopOceania),]  #subset of the matrix of pairwise genetic distance
+
+matGenOceania<-matGenOceania[listaPopOceania,listaPopOceania] #the two matrices have the populations/languages in the same order
+
+```
+
+# 2. Geographic distances between populations
+
+We want to control for geography in the similarity patterns we will find.
+
+```{r, message=FALSE, warning=FALSE}
+library("fields")
+lista<-listaOceania[,c(6,7)]  #select latitude and longitude
+rdist.earth (lista, miles=FALSE) ->matGeoOceania
+matGeoOceania[upper.tri(matGeoOceania)] <- NA
+diag(matGeoOceania) = 0   # the matrix of geographic distances is ready to use
+```
+where are we on the map?
+```{r, message=FALSE, warning=FALSE}
+library('maps')
+library('geosphere')
+library("rworldmap")
+```
+
+
+```{r,  message=FALSE, warning=FALSE}
+map(database = "world", regions = ".", col="grey20", fill=TRUE,  lwd=0.1)
+points(x=listaComplete$lon, y=listaComplete$lat, pch=19,  cex=0.3, col=as.character(listaComplete$colorCode))
+```
+
+We create a color code for the language families in our list of populations/languages.
+
+```{r, message=FALSE, warning=FALSE}
+
+fam<-read.table("LFamiliesOceania.txt", as.is=T, header=T, sep="\t")
+rownames(fam)<-fam[,1]
+famm<-fam[listaPopOceania,]
+families<-table(famm[,3])
+colorcod<-rainbow(length(families))
+colorstring<-c(rep(NA, length(famm[,3])))
+
+for (i in 1:length(families)) {
+  colorstring[which(famm[,3]==labels(families[i]))]<-colorcod[i]
+}
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+listaOceania<-listaOceania[listaPopOceania,]
+map(database = "world", regions = ".", xlim=c(140,190),ylim=c(-43,13),col="grey", fill=TRUE,  lwd=0.1)
+points(x=listaOceania$lon, y=listaOceania$lat, pch=19,  cex=0.5, col=colorstring)
+text(x=listaOceania$lon, y=listaOceania$lat,labels=listaOceania$populationName,cex=0.5, font=2)
+```
+
+# 3. Correlation between distances: Mantel test
+The Mantel test is a simple way to assess global patterns of correlations between matrices. Use with moderation.
+
+```{r, message=FALSE, warning=FALSE}
+library("ecodist")
+m1<-as.dist(matGenOceania)
+m2<-as.dist(matLin)
+m3<-as.dist(matGeoOceania)
+```
+
+```
+mantel(m1~m2)
+
+library("vegan")		
+mantel(m2, m3, method="pearson", permutations=999)
+mantel(m1, m3, method="pearson", permutations=999)
+mantel.partial(m2, m1, m3)
+```
+
+The partial mantel is also a correlation test between two matrices, but controlling for the effect of a third distance matrix. This control is done by calculating the correlation between the residuals of each of the two main distance matrices after a linear regression on the third distance matrix.
+
+
+Visualize the distances in a correlation plot
+
+```
+plot(m1,m2)
+plot(m1,m3)
+plot(m2,m3)
+```
+Which population speak the same language but are genetically distant?
+
+# 4. Visualize relationships with a tree
+
+We create a Neighbour Joining tree from the matrix of pairwise distances.
+
+### UPGMA tree 
+
+```{r, message=FALSE, warning=FALSE}
+library("pegas")
+library("phangorn")
+upgmatreeGen<-upgma(m1)
+```
+```
+plot.phylo(upgmatreeGen,  tip.col=colorstring)
+unlist(names(families))->nomilegenda
+legend("bottomleft",nomilegenda,text.col=colorcod)
+
+upgmatreeLing<-upgma(m2)
+plot.phylo(upgmatreeLing,  tip.col=colorstring)
+unlist(names(families))->nomilegenda
+legend("bottomleft",nomilegenda,text.col=colorcod)
+```
+
+```{r, echo=FALSE}
+plot.phylo(upgmatreeGen,  tip.col=colorstring)
+```
+
+### Neighbour Joining tree
+
+```{r}
+
+nj.gen <- nj(m1) #create the object neighbour joining tree for genetic distances
+nj.gen$edge.length[nj.gen$edge.length < 0] = 0.002 # a little trick to avoid negative branches
+
+```
+```
+plot.phylo(nj.gen, type="u", tip.col=colorstring, cex=0.3 )
+unlist(names(families))->nomilegenda
+legend("bottomleft",nomilegenda,text.col=colorcod)
+
+write.tree(nj.gen, "Oceania_distGen.tree")
+
+nj.ling <- nj(m2) #create the object neighbour joining tree for linguistic distances
+nj.ling$edge.length[nj.ling$edge.length < 0] = 0.002
+
+
+plot.phylo(nj.ling, type="u", tip.col=colorstring, cex=0.5 )
+unlist(names(families))->nomilegenda
+legend("bottomleft",nomilegenda,text.col=colorcod)
+
+write.tree(nj.ling, "Oceania_distLing.tree")
+
+```
+
+```{r, echo=FALSE}
+plot.phylo(nj.gen, type="u", tip.col=colorstring, cex=0.3 )
+```
+
+What are the differences between the two trees?
+
+#5. Visualize relationships with a neighbor net
+
+```{r}
+net.Gen<-neighborNet(matGenOceania)
+plot(net.Gen, "2D")
+```
+
+
+It's a bit ugly. Better plotting options in SplitsTree! 
+
+
+
+*for questions: <barbieri.chiara@gmail.com>*
