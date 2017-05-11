@@ -58,7 +58,7 @@
 <a id="user-content-querying-the-database" class="anchor" href="#querying-the-database" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Querying the database</h1>
 <h2>
 <a id="user-content-executing-sql" class="anchor" href="#executing-sql" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Executing SQL</h2>
-<p>Now we can inspect the data using SQL queries either running <code>sqlite3 qmss.sqlite</code></p>
+<p>Now we can inspect the data using SQL queries running <code>sqlite3 qmss.sqlite</code></p>
 <div class="highlight highlight-source-sql"><pre>$ sqlite3 <span class="pl-c1">qmss</span>.<span class="pl-c1">sqlite</span> 
 SQLite version <span class="pl-c1">3</span>.<span class="pl-c1">8</span>.<span class="pl-c1">2</span> <span class="pl-c1">2013</span><span class="pl-k">-</span><span class="pl-c1">12</span><span class="pl-k">-</span><span class="pl-c1">06</span> <span class="pl-c1">14</span>:<span class="pl-c1">53</span>:<span class="pl-c1">30</span>
 Enter <span class="pl-s"><span class="pl-pds">"</span>.help<span class="pl-pds">"</span></span> for instructions
@@ -71,6 +71,9 @@ sqlite<span class="pl-k">&gt;</span> <span class="pl-k">SELECT</span> <span clas
 <li>While SQL is case insensitive, it is customary to write SQL keywords like <code>SELECT</code>, <code>FROM</code>
 and <code>WHERE</code> in uppercase, to clearly distinguish them from identifiers for tables and columns.</li>
 </ul>
+<p>You can change some SQLite settings to make the output easier to read. First, set the output mode to display left-aligned columns. Then turn on the display of column headers.</p>
+<div class="highlight highlight-source-sql"><pre>.mode column
+.header <span class="pl-k">on</span></pre></div>
 <h2>
 <a id="user-content-select" class="anchor" href="#select" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SELECT</h2>
 <p>Querying or selecting rows in a table is done using SQL's <code>SELECT</code> command, specifying the
@@ -210,7 +213,7 @@ or more precisely by inventory and then count the number of grouped phonemes as 
     tone <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>+<span class="pl-pds">'</span></span> 
 <span class="pl-k">GROUP BY</span> 
     InventoryID, LanguageCode
-<span class="pl-k">ORDER BY</span> tones <span class="pl-k">DESC</span>;</pre></div>
+<span class="pl-k">ORDER BY</span> tones <span class="pl-k">DESC</span> <span class="pl-k">LIMIT</span> <span class="pl-c1">5</span>;</pre></div>
 <table>
 <tr>
 <th>InventoryID</th>
@@ -361,8 +364,8 @@ a view:</p>
 <h2>
 <a id="user-content-joining-languoids-and-phonemes" class="anchor" href="#joining-languoids-and-phonemes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Joining <code>languoids</code> and <code>phonemes</code>
 </h2>
-<p>We can only combine information from two tables if they have something in common. In our case,
-<code>languoids.isocodes</code> stores (potentially multiple) ISO codes associated with a lnaguoid, and
+<p>We can only merge information from two tables if they have something in common. In our case,
+<code>languoids.isocodes</code> stores (potentially multiple) ISO codes associated with a languoid, and
 <code>tones.LanguageCode</code> stores single ISO codes. To match records of the two tables, we have to
 further investigate the values in <code>languoids.isocodes</code>:</p>
 <pre><code>sqlite&gt; SELECT max(length(isocodes)) FROM languoids;
@@ -382,7 +385,7 @@ ISO codes (or <code>null</code>), we can use this field to <code>JOIN</code> the
 <a id="user-content-joining-languoids-and-precipitation" class="anchor" href="#joining-languoids-and-precipitation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Joining <code>languoids</code> and <code>precipitation</code>
 </h2>
 <p>The D-PLACE data is coded for ISO codes as well as for Glottocodes, thus we have two alternatives
-for joining. Let's see which one is prefereable:</p>
+for joining. Let's see which one is preferable:</p>
 <div class="highlight highlight-source-sql"><pre>sqlite<span class="pl-k">&gt;</span> <span class="pl-k">select</span> <span class="pl-c1">count</span>(iso_code) <span class="pl-k">from</span> precipitation;
 <span class="pl-c1">1286</span>
 sqlite<span class="pl-k">&gt;</span> <span class="pl-k">select</span> <span class="pl-c1">count</span>(distinct iso_code) <span class="pl-k">from</span> precipitation;

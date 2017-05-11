@@ -18,6 +18,13 @@ Notes:
 - While SQL is case insensitive, it is customary to write SQL keywords like `SELECT`, `FROM`
   and `WHERE` in uppercase, to clearly distinguish them from identifiers for tables and columns.
 
+You can change some SQLite settings to make the output easier to read. First, set the output mode to display left-aligned columns. Then turn on the display of column headers.
+
+```sql
+.mode column
+.header on
+```
+
 
 ## SELECT
 
@@ -177,7 +184,7 @@ WHERE
     tone = '+' 
 GROUP BY 
     InventoryID, LanguageCode
-ORDER BY tones DESC;
+ORDER BY tones DESC LIMIT 5;
 ```
 
 <table>

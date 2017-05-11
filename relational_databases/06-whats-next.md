@@ -104,6 +104,13 @@ sqlite3 -csv -header qmss.sqlite "`cat query.sql`" > dataset.csv
 ```
 
 
+## Programming with databases
+
+Accessing SQLite databases programmatically is easy, from both Python and
+R (using RSQLite) programs. This means you can write python code that
+accesses the database, i.e. runs SQL queries and retrieves the results.
+
+
 ## Visualization
 
 Our [resulting CSV file](data/dataset.csv) could easily be converted to GeoJSON using a 

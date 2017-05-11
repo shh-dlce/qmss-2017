@@ -145,6 +145,11 @@ csvsql --db=sqlite:///qmss.sqlite --insert --tables phonemes -t data/phoible-by-
 csvsql --db=sqlite:///qmss.sqlite --insert --tables precipitation data/dplace-societies-2016-4-19-clean.csv
 sqlite3 -csv -header qmss.sqlite <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">`</span>cat query.sql<span class="pl-pds">`</span></span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span> dataset.csv</pre></div>
 <h2>
+<a id="user-content-programming-with-databases" class="anchor" href="#programming-with-databases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Programming with databases</h2>
+<p>Accessing SQLite databases programmatically is easy, from both Python and
+R (using RSQLite) programs. This means you can write python code that
+accesses the database, i.e. runs SQL queries and retrieves the results.</p>
+<h2>
 <a id="user-content-visualization" class="anchor" href="#visualization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Visualization</h2>
 <p>Our <a href="data/dataset.csv">resulting CSV file</a> could easily be converted to GeoJSON using a
 service such as <a href="http://mapbox.github.io/csv2geojson/">csv2geojson</a>
