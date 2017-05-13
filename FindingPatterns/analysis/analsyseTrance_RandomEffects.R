@@ -42,6 +42,7 @@ plot(party.tree)
 
 
 # A RE-EM tree with a random effect for language family
+# REEMtree will only accept a continuous dependent variable:
 reem.tree = REEMtree(Agriculture ~ 
                        HighGods + 
                        Games.PhysicalSkill + 

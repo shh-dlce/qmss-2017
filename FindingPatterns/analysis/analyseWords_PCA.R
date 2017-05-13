@@ -21,7 +21,7 @@ scaled.d = scale(d)
 pca <- prcomp(scaled.d)
 
 # Plot the first and second principle components
-plot(pca$x[,1:2])
+plot(pca$x[,c(1,3)])
 
 # There are some words outside the main cluster, what are those?
 plot(pca$x[,1:2])
